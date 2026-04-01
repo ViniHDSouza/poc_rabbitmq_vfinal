@@ -1,0 +1,22 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: consumer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 1
+
+rabbitmq:
+  exchange: exchange.headers.pessoa     # ← adicionar esta linha
+  queue:
+    sp: queue.pessoa.saopaulo
+    rj: queue.pessoa.riodejaneiro
+    todas: queue.pessoa.todas

@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: producer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  exchange: exchange.headers.pessoa
+  queue:
+    sp: queue.pessoa.saopaulo
+    rj: queue.pessoa.riodejaneiro
+    todas: queue.pessoa.todas

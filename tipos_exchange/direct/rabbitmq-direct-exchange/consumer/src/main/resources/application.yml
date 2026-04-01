@@ -1,0 +1,29 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: consumer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 1
+        retry:
+          enabled: true
+          initial-interval: 2000
+          max-attempts: 3
+          multiplier: 2.0
+
+rabbitmq:
+  exchange: pessoa.direct.exchange
+  queue:
+    cadastro: pessoa.cadastro.queue
+    remocao: pessoa.remocao.queue
+  routing-key:
+    cadastro: pessoa.cadastro
+    remocao: pessoa.remocao

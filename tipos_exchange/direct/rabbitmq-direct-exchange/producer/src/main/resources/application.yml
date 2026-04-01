@@ -1,0 +1,20 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: producer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  exchange: pessoa.direct.exchange
+  queue:
+    cadastro: pessoa.cadastro.queue
+    remocao: pessoa.remocao.queue
+  routing-key:
+    cadastro: pessoa.cadastro
+    remocao: pessoa.remocao

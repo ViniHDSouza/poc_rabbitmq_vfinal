@@ -1,0 +1,11 @@
+#!/bin/sh
+# Maven Wrapper - simplified version
+# For full wrapper, use: mvn wrapper:wrapper
+MAVEN_CMD="mvn"
+if command -v mvn > /dev/null 2>&1; then
+    exec mvn "$@"
+else
+    echo "Maven not found. Please install Maven or use the full Maven Wrapper."
+    echo "To generate the full wrapper: mvn wrapper:wrapper"
+    exit 1
+fi

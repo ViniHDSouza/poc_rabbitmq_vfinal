@@ -1,0 +1,22 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: consumer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 1
+
+rabbitmq:
+  exchange: pessoa.topic.exchange
+  queue:
+    todos-eventos: fila.pessoa.todos-eventos
+    cadastro: fila.pessoa.cadastro
+    remocao: fila.pessoa.remocao
