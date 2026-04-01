@@ -1,0 +1,15 @@
+services:
+  estudo-rabbitmq:
+    image: rabbitmq:3-management
+    restart: no
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    volumes:
+      - estudo-rabbitmq:/var/lib/rabbitmq/
+
+volumes:
+  estudo-rabbitmq:

@@ -1,0 +1,30 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: subscriber-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 1
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 2.0
+
+rabbitmq:
+  exchange: pessoa.fanout
+
+  # Cada subscriber tem sua própria fila — chave do Pub/Sub.
+  # Ambas recebem todas as mensagens publicadas no fanout, de forma independente.
+  queues:
+    email:     pessoa.queue.email
+    auditoria: pessoa.queue.auditoria

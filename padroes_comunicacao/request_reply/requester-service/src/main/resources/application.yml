@@ -1,0 +1,20 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: requester-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  # Fila para onde o requester envia a requisição
+  request-queue: pessoa.request.queue
+
+  # Timeout em ms para aguardar a resposta do replier
+  # Se estourar, lança AmqpTimeoutException
+  reply-timeout: 10000

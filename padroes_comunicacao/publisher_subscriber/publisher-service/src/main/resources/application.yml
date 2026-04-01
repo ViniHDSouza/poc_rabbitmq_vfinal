@@ -1,0 +1,16 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: publisher-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  # FanoutExchange: não usa routing key — entrega para TODAS as filas vinculadas
+  exchange: pessoa.fanout

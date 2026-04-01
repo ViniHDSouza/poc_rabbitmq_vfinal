@@ -1,0 +1,44 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: competing-consumer-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: manual   # ACK manual: worker confirma só após processar com sucesso
+        # ---------------------------------------------------------------
+        # prefetch: quantas mensagens cada worker puxa do broker de uma vez.
+        # Valor 1 = Fair Dispatch: o broker só envia a próxima mensagem
+        # ao worker depois que ele confirmou (ACK) a anterior.
+        # Garante distribuição justa mesmo quando workers têm velocidades
+        # diferentes. Sem isso, um worker lento acumula mensagens enquanto
+        # workers rápidos ficam ociosos.
+        # ---------------------------------------------------------------
+        prefetch: 1
+        # ---------------------------------------------------------------
+        # concurrency: número mínimo de threads (workers) nesta instância.
+        # max-concurrency: o Spring pode escalar até este limite sob carga.
+        # Simula múltiplas instâncias do serviço rodando em paralelo.
+        # ---------------------------------------------------------------
+        concurrency: 3
+        max-concurrency: 5
+        retry:
+          enabled: true
+          initial-interval: 2000
+          max-attempts: 3
+          multiplier: 2.0
+
+rabbitmq:
+  queue: pessoa.competing.queue
+
+workers:
+  # Tempo simulado de processamento por mensagem (ms)
+  # Varie este valor para demonstrar o Fair Dispatch em ação
+  processing-time-ms: 800
