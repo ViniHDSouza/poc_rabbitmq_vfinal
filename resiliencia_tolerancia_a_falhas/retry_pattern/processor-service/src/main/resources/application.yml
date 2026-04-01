@@ -1,0 +1,66 @@
+server:
+  port: 8094
+
+spring:
+  application:
+    name: processor-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+    listener:
+      simple:
+        # AUTO: o Spring confirma (ACK) se o método retornar normalmente.
+        # Após esgotar os retries, o MessageRecoverer decide o destino final.
+        # Usamos AUTO + Retry aqui para manter o foco no padrão de retry.
+        acknowledge-mode: auto
+        prefetch: 1
+
+        # ---------------------------------------------------------------
+        # RETRY — configuração do Spring Retry integrado ao Spring AMQP
+        #
+        # Como funciona internamente:
+        #   1. O listener lança uma exceção
+        #   2. O Spring Retry intercepta (via RetryOperationsInterceptor)
+        #   3. Aguarda o intervalo calculado pelo backoff
+        #   4. Rechama o método listener com a MESMA mensagem
+        #   5. Se ainda falhar após max-attempts, chama o MessageRecoverer
+        #
+        # IMPORTANTE: durante as retentativas a mensagem NÃO sai da fila
+        # nem é reenfileirada. O retry acontece em memória, na mesma thread.
+        # A mensagem só é ACK ou NACK ao broker após o retry se esgotar.
+        # ---------------------------------------------------------------
+        retry:
+          enabled: true
+
+          # Tentativas TOTAIS (1ª execução + retries).
+          # max-attempts=4 → 1 execução + 3 retries
+          max-attempts: 4
+
+          # Intervalo antes da 1ª retentativa (ms)
+          initial-interval: 1000   # 1 segundo
+
+          # Fator multiplicador para backoff exponencial.
+          # multiplier=2.0 → 1s, 2s, 4s, 8s...
+          multiplier: 2.0
+
+          # Limite máximo do intervalo (ms).
+          # Sem este teto, com multiplier alto o backoff pode crescer demais.
+          max-interval: 10000      # 10 segundos
+
+rabbitmq:
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key
+  queue: pessoa.retry.queue
+  dlx: pessoa.dlx
+  dlq: pessoa.retry.queue.dlq
+
+# Tipo de falha que o Processor vai simular, configurável sem recompilar.
+# TRANSIENTE  → falha nas primeiras tentativas, sucesso na última
+# PERMANENTE  → falha em TODAS as tentativas → esgota retries → DLQ
+# SUCESSO     → processa na 1ª tentativa, sem retries
+processor:
+  tipo-falha: PERMANENTE   # TRANSIENTE | PERMANENTE | SUCESSO

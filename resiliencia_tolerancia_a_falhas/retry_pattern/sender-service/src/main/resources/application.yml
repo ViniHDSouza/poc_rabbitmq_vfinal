@@ -1,0 +1,17 @@
+server:
+  port: 8093
+
+spring:
+  application:
+    name: sender-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key
+  queue: pessoa.retry.queue

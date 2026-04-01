@@ -1,0 +1,18 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: sender-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  # O Sender só precisa conhecer o exchange e a routing key.
+  # A fila é declarada exclusivamente pelo Processor (com os argumentos DLX).
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key

@@ -1,0 +1,38 @@
+server:
+  port: 8111
+
+spring:
+  application:
+    name: processor-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+        # Retry do Spring DESABILITADO — o retry acontece via broker (TTL + DLQ)
+        retry:
+          enabled: false
+
+rabbitmq:
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key
+  queue: pessoa.queue
+
+  # Fila de espera (wait queue) — mensagens rejeitadas ficam aqui por TTL segundos
+  # e depois voltam para a fila principal automaticamente via DLX
+  wait-queue: pessoa.queue.wait
+  wait-ttl: 5000        # 5 segundos de delay entre tentativas
+
+  # Fila morta definitiva — mensagens que esgotaram todas as tentativas
+  parking-lot: pessoa.queue.parking-lot
+
+  # Número máximo de tentativas (contando a primeira execução)
+  max-retries: 3
+
+# Tipo de falha simulada: SUCESSO | TRANSIENTE | PERMANENTE
+processor:
+  tipo-falha: TRANSIENTE

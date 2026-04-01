@@ -1,0 +1,38 @@
+server:
+  port: 8092
+
+spring:
+  application:
+    name: processor-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        # MANUAL: o código chama basicAck ou basicNack explicitamente.
+        # Necessário para controlar com precisão quando uma mensagem
+        # deve ir para a DLQ (basicNack com requeue=false).
+        acknowledge-mode: manual
+        prefetch: 1
+        # Retry DESABILITADO intencionalmente.
+        # Com retry habilitado, o Spring retentaria N vezes antes de
+        # chamar o MessageRecoverer — isso mascararia o comportamento
+        # da DLQ para fins de estudo.
+        # Em produção você pode habilitar retry + DLQ juntos.
+        retry:
+          enabled: false
+
+rabbitmq:
+  # Fila principal
+  queue: pessoa.queue
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key
+
+  # Dead Letter Exchange — recebe mensagens rejeitadas da fila principal
+  dlx: pessoa.dlx
+
+  # Dead Letter Queue — armazena definitivamente as mensagens com falha
+  dlq: pessoa.queue.dlq
