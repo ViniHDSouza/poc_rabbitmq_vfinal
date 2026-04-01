@@ -1,0 +1,2425 @@
+{
+  "info": {
+    "_postman_id": "33b1922f-6c6b-411e-afd6-fe0239eef570",
+    "name": "POC RabbitMQ — Vinícius Henrique",
+    "description": "Coleção completa para testar todas as 16 POCs de RabbitMQ.\n\nCada pasta corresponde a um módulo do repositório.\n\n⚠️ Antes de testar, suba o RabbitMQ: docker compose up -d\n⚠️ Inicie consumer ANTES do producer em cada POC.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Tipos de Exchange",
+      "item": [
+        {
+          "name": "1.1 Direct Exchange (producer :8081)",
+          "item": [
+            {
+              "name": "Cadastrar pessoa",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8081/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Remover pessoa por UUID",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/api/pessoas/550e8400-e29b-41d4-a716-446655440000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "550e8400-e29b-41d4-a716-446655440000"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (6 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/api/pessoas/lote?quantidade=6",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "6"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Validação — body vazio (400)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8081/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"\",\n  \"telefone\": -1,\n  \"endereco\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.2 Fanout Exchange (producer :8080)",
+          "item": [
+            {
+              "name": "Publicar pessoa (broadcast)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (5 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas/lote?quantidade=5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.3 Topic Exchange (producer :8080)",
+          "item": [
+            {
+              "name": "Cadastro novo (pessoa.cadastro.novo)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas/cadastro/novo",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "cadastro",
+                    "novo"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Cadastro atualizado (pessoa.cadastro.atualizado)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas/cadastro/atualizado",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "cadastro",
+                    "atualizado"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Remoção deletado (pessoa.remocao.deletado)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas/remocao/deletado",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "remocao",
+                    "deletado"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Routing key customizada",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas/enviar?routingKey=pessoa.teste.qualquer",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "enviar"
+                  ],
+                  "query": [
+                    {
+                      "key": "routingKey",
+                      "value": "pessoa.teste.qualquer"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (6 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas/lote?quantidade=6",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "6"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "1.4 Headers Exchange (producer :8080)",
+          "item": [
+            {
+              "name": "SP + cadastro (whereAll match)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\",\n  \"estado\": \"SP\",\n  \"tipoOperacao\": \"cadastro\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "RJ + atualizacao (whereAny match)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\",\n  \"estado\": \"RJ\",\n  \"tipoOperacao\": \"atualizacao\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "SP + atualizacao (whereAny parcial)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\",\n  \"estado\": \"SP\",\n  \"tipoOperacao\": \"atualizacao\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "MG + cadastro (somente 'todas')",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8080/api/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\",\n  \"estado\": \"MG\",\n  \"tipoOperacao\": \"cadastro\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Padrões de Comunicação",
+      "item": [
+        {
+          "name": "2.1 Producer/Consumer (:8081)",
+          "item": [
+            {
+              "name": "Publicar pessoa",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8081/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (5 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/pessoas/lote?quantidade=5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Validação — body inválido (400)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8081/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8081",
+                  "path": [
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"\",\n  \"telefone\": -1,\n  \"endereco\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.2 Publisher/Subscriber (:8083)",
+          "item": [
+            {
+              "name": "Publicar evento (email + auditoria)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8083/publicar",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "publicar"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (5 eventos)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/publicar/lote?quantidade=5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8083",
+                  "path": [
+                    "publicar",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.3 Competing Consumers (sender :8087 | consumer :8088)",
+          "item": [
+            {
+              "name": "Enviar 1 mensagem",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8087/enviar",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8087",
+                  "path": [
+                    "enviar"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Enviar lote (12 msgs → 3 workers)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8087/enviar/lote?quantidade=12",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8087",
+                  "path": [
+                    "enviar",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "12"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Ver métricas dos workers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8088/metricas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8088",
+                  "path": [
+                    "metricas"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.4 Request/Reply (requester :8085)",
+          "item": [
+            {
+              "name": "Consultar pessoa (aguarda reply)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8085/consultar",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8085",
+                  "path": [
+                    "consultar"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Consultar lote (3 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8085/consultar/lote?quantidade=3",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8085",
+                  "path": [
+                    "consultar",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "3"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Protocolos",
+      "item": [
+        {
+          "name": "3.1 AMQP (sender :8099)",
+          "item": [
+            {
+              "name": "Mensagem transiente (deliveryMode=1)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8099/mensagens/transiente",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8099",
+                  "path": [
+                    "mensagens",
+                    "transiente"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mensagem persistente (deliveryMode=2)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8099/mensagens/persistente",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8099",
+                  "path": [
+                    "mensagens",
+                    "persistente"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mensagem com prioridade",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8099/mensagens/prioridade?prioridade=9",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8099",
+                  "path": [
+                    "mensagens",
+                    "prioridade"
+                  ],
+                  "query": [
+                    {
+                      "key": "prioridade",
+                      "value": "9"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mensagem com expiração (5s TTL)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8099/mensagens/expiracao?ttlMs=5000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8099",
+                  "path": [
+                    "mensagens",
+                    "expiracao"
+                  ],
+                  "query": [
+                    {
+                      "key": "ttlMs",
+                      "value": "5000"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mensagem completa (todas as props)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8099/mensagens/completa",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8099",
+                  "path": [
+                    "mensagens",
+                    "completa"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Todos os cenários de uma vez",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8099/mensagens/todos-cenarios",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8099",
+                  "path": [
+                    "mensagens",
+                    "todos-cenarios"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.2 MQTT (sender :8101)",
+          "item": [
+            {
+              "name": "QoS 0 — fire-and-forget",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/qos0",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "qos0"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "QoS 1 — at least once",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/qos1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "qos1"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "QoS 2 — exactly once",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/qos2",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "qos2"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Mensagem retida (retain=true)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/retido",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "retido"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Limpar mensagem retida",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/retido?topico=pessoas/atualizacao",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "retido"
+                  ],
+                  "query": [
+                    {
+                      "key": "topico",
+                      "value": "pessoas/atualizacao"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Publicar exclusão",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/exclusao",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "exclusao"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Todos os cenários",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8101/mensagens/todos-cenarios",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8101",
+                  "path": [
+                    "mensagens",
+                    "todos-cenarios"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.3 HTTP API (sender :8103 | consumer :8104)",
+          "item": [
+            {
+              "name": "Publicar simples",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8103/mensagens/simples",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8103",
+                  "path": [
+                    "mensagens",
+                    "simples"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar completa (todas as props)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8103/mensagens/completa",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8103",
+                  "path": [
+                    "mensagens",
+                    "completa"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (5 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8103/mensagens/lote?quantidade=5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8103",
+                  "path": [
+                    "mensagens",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Consumir 1 mensagem (remove da fila)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8104/mensagens/consumir?count=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8104",
+                  "path": [
+                    "mensagens",
+                    "consumir"
+                  ],
+                  "query": [
+                    {
+                      "key": "count",
+                      "value": "1"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Inspecionar sem consumir (peek)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8104/mensagens/inspecionar?count=1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8104",
+                  "path": [
+                    "mensagens",
+                    "inspecionar"
+                  ],
+                  "query": [
+                    {
+                      "key": "count",
+                      "value": "1"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "curl direto — publicar na HTTP API",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:15672/api/exchanges/%2F/pessoa.exchange/publish",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "15672",
+                  "path": [
+                    "api",
+                    "exchanges",
+                    "%2F",
+                    "pessoa.exchange",
+                    "publish"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"routing_key\": \"pessoa.routing-key\",\n  \"properties\": {\n    \"delivery_mode\": 2\n  },\n  \"payload\": \"{\\\"nome\\\": \\\"Jo\\\\u00e3o Silva\\\", \\\"telefone\\\": 11999991234, \\\"endereco\\\": \\\"Rua das Flores, 10\\\"}\",\n  \"payload_encoding\": \"string\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "username",
+                      "value": "rabbitmq"
+                    },
+                    {
+                      "key": "password",
+                      "value": "rabbitmq"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "curl direto — consumir da HTTP API",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:15672/api/queues/%2F/pessoa.queue/get",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "15672",
+                  "path": [
+                    "api",
+                    "queues",
+                    "%2F",
+                    "pessoa.queue",
+                    "get"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"count\": 1,\n  \"ackmode\": \"ack_requeue_false\",\n  \"encoding\": \"auto\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "basic",
+                  "basic": [
+                    {
+                      "key": "username",
+                      "value": "rabbitmq"
+                    },
+                    {
+                      "key": "password",
+                      "value": "rabbitmq"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "3.4 STOMP (sender :8105)",
+          "item": [
+            {
+              "name": "Enviar para /queue (direct)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8105/mensagens/fila",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8105",
+                  "path": [
+                    "mensagens",
+                    "fila"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Enviar para /exchange (named)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8105/mensagens/exchange",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8105",
+                  "path": [
+                    "mensagens",
+                    "exchange"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Enviar para /topic (amq.topic)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8105/mensagens/topico",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8105",
+                  "path": [
+                    "mensagens",
+                    "topico"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Enviar completo (com receipt)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8105/mensagens/completo",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8105",
+                  "path": [
+                    "mensagens",
+                    "completo"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Todos os destinos",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8105/mensagens/todos-destinos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8105",
+                  "path": [
+                    "mensagens",
+                    "todos-destinos"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Resiliência e Tolerância a Falhas",
+      "item": [
+        {
+          "name": "4.1 Dead Letter Queue (sender :8091)",
+          "item": [
+            {
+              "name": "Pessoa válida → ACK (sucesso)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8091/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8091",
+                  "path": [
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Pessoa com falha → NACK → DLQ",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8091/pessoas/falha",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8091",
+                  "path": [
+                    "pessoas",
+                    "falha"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Lote misto (metade sucesso, metade DLQ)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8091/pessoas/lote?quantidade=6",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8091",
+                  "path": [
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "6"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.2 Retry Pattern (sender :8093)",
+          "item": [
+            {
+              "name": "Publicar (comportamento depende do yml)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8093/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8093",
+                  "path": [
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (3 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8093/pessoas/lote?quantidade=3",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8093",
+                  "path": [
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "3"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "4.3 Delayed Retry — TTL + DLQ Trampolim (sender :8110)",
+          "item": [
+            {
+              "name": "Publicar pessoa (delay visível no painel)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8110/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8110",
+                  "path": [
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (3 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8110/pessoas/lote?quantidade=3",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8110",
+                  "path": [
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "3"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Modos de Consumo",
+      "item": [
+        {
+          "name": "5.1 Pull — basic.get (sender :8095 | consumer :8096)",
+          "item": [
+            {
+              "name": "Acumular mensagens na fila",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8095/pessoas/lote?quantidade=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8095",
+                  "path": [
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Pull UM (busca 1 mensagem)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8096/pull/um",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8096",
+                  "path": [
+                    "pull",
+                    "um"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Pull LOTE (busca até 4)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8096/pull/lote?quantidade=4",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8096",
+                  "path": [
+                    "pull",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "4"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Pull TODOS (drena a fila)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8096/pull/todos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8096",
+                  "path": [
+                    "pull",
+                    "todos"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "5.2 Push — basic.consume (sender :8097)",
+          "item": [
+            {
+              "name": "Publicar 1 pessoa (entrega automática)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8097/pessoas",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8097",
+                  "path": [
+                    "pessoas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"João Silva\",\n  \"telefone\": 11999991234,\n  \"endereco\": \"Rua das Flores, 10\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Publicar lote (10 msgs)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8097/pessoas/lote?quantidade=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8097",
+                  "path": [
+                    "pessoas",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Recursos Avançados",
+      "item": [
+        {
+          "name": "6.1 Priority Queue (sender :8112 | consumer :8113)",
+          "item": [
+            {
+              "name": "Pedido prioridade MÁXIMA (9)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8112/pedidos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8112",
+                  "path": [
+                    "pedidos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descricao\": \"Servidor caiu — urgente\",\n  \"valor\": 9999.99,\n  \"cliente\": \"CEO\",\n  \"prioridade\": 9\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Pedido prioridade MÍNIMA (0)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8112/pedidos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8112",
+                  "path": [
+                    "pedidos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descricao\": \"Atualizar cadastro\",\n  \"valor\": 10.0,\n  \"cliente\": \"Visitante\",\n  \"prioridade\": 0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Pedido prioridade MÉDIA (5)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8112/pedidos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8112",
+                  "path": [
+                    "pedidos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descricao\": \"Pedido Gold\",\n  \"valor\": 500.0,\n  \"cliente\": \"Ouro\",\n  \"prioridade\": 5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "DEMONSTRAÇÃO — 10 pedidos P0→P9 (consume P9→P0)",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8112/pedidos/demonstracao",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8112",
+                  "path": [
+                    "pedidos",
+                    "demonstracao"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "6.2 Idempotent Consumer (sender :8114 | processor :8115)",
+          "item": [
+            {
+              "name": "Pagamento normal (1x)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8114/pagamentos",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8114",
+                  "path": [
+                    "pagamentos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"pedidoId\": \"PED-001\",\n  \"cliente\": \"João\",\n  \"valor\": 199.9\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "DUPLICAR — mesma msg 3x (simula redelivery)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:8114/pagamentos/duplicar?vezes=3",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8114",
+                  "path": [
+                    "pagamentos",
+                    "duplicar"
+                  ],
+                  "query": [
+                    {
+                      "key": "vezes",
+                      "value": "3"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"pedidoId\": \"PED-002\",\n  \"cliente\": \"Maria\",\n  \"valor\": 500.0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Lote de 5 pagamentos únicos",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8114/pagamentos/lote?quantidade=5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8114",
+                  "path": [
+                    "pagamentos",
+                    "lote"
+                  ],
+                  "query": [
+                    {
+                      "key": "quantidade",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Verificar banco (pagamentos + controle)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8115/status",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8115",
+                  "path": [
+                    "status"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bônus — RabbitMQ Management API",
+      "item": [
+        {
+          "name": "Overview do broker",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:15672/api/overview",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "15672",
+              "path": [
+                "api",
+                "overview"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "rabbitmq"
+                },
+                {
+                  "key": "password",
+                  "value": "rabbitmq"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar todas as filas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:15672/api/queues",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "15672",
+              "path": [
+                "api",
+                "queues"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "rabbitmq"
+                },
+                {
+                  "key": "password",
+                  "value": "rabbitmq"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar todos os exchanges",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:15672/api/exchanges",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "15672",
+              "path": [
+                "api",
+                "exchanges"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "rabbitmq"
+                },
+                {
+                  "key": "password",
+                  "value": "rabbitmq"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar connections ativas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:15672/api/connections",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "15672",
+              "path": [
+                "api",
+                "connections"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "rabbitmq"
+                },
+                {
+                  "key": "password",
+                  "value": "rabbitmq"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar channels ativos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:15672/api/channels",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "15672",
+              "path": [
+                "api",
+                "channels"
+              ]
+            },
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "rabbitmq"
+                },
+                {
+                  "key": "password",
+                  "value": "rabbitmq"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
