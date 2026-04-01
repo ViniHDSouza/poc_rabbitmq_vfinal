@@ -1,0 +1,21 @@
+server:
+  port: 8096
+
+spring:
+  application:
+    name: consumer-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  queue: pessoa.queue
+
+consumer:
+  # Tempo máximo (ms) que receive() aguarda por uma mensagem antes de retornar null.
+  # 0  = não bloqueia — retorna imediatamente se a fila estiver vazia
+  # >0 = aguarda até N ms por uma mensagem (long polling leve)
+  receive-timeout: 0

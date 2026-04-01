@@ -1,0 +1,63 @@
+server:
+  port: 8098
+
+spring:
+  application:
+    name: consumer-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+    listener:
+      simple:
+        # ---------------------------------------------------------------
+        # acknowledge-mode — define quem confirma a mensagem ao broker
+        #
+        # AUTO   → Spring confirma (ACK) automaticamente se o método
+        #          retornar sem exceção. Rejeita (NACK requeue=true) se
+        #          lançar exceção. Mais simples, menos controle.
+        #
+        # MANUAL → o código chama channel.basicAck() ou basicNack()
+        #          explicitamente. Controle total, mais verboso.
+        #
+        # NONE   → broker não espera confirmação (fire-and-forget).
+        #          Máximo throughput, zero garantia.
+        # ---------------------------------------------------------------
+        acknowledge-mode: auto
+
+        # ---------------------------------------------------------------
+        # prefetch — quantas mensagens o broker entrega ao consumer
+        # antes de receber um ACK (janela de pré-busca)
+        #
+        # prefetch=1 → broker entrega 1 por vez; só envia a próxima
+        #              após receber ACK da anterior (Fair Dispatch)
+        # prefetch=10 → broker pode ter até 10 mensagens "em voo"
+        #               simultaneamente para este consumer
+        #
+        # Valor alto → maior throughput, mas mensagens podem ficar
+        #              presas em memória se o consumer cair
+        # Valor baixo → menor throughput, distribuição mais justa
+        # ---------------------------------------------------------------
+        prefetch: 1
+
+        # ---------------------------------------------------------------
+        # concurrency — threads simultâneas do listener
+        #
+        # concurrency=1     → uma thread por vez, processamento serial
+        # concurrency=3     → 3 threads simultâneas, processamento paralelo
+        # max-concurrency=5 → Spring pode escalar até 5 se houver backlog
+        # ---------------------------------------------------------------
+        concurrency: 1
+        max-concurrency: 1
+
+rabbitmq:
+  queue: pessoa.queue
+
+consumer:
+  # Tempo simulado de processamento por mensagem (ms).
+  # Permite observar o efeito do prefetch e concurrency
+  # alterando este valor sem recompilar.
+  processing-time-ms: 500
