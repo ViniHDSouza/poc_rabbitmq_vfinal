@@ -1,0 +1,15 @@
+server:
+  port: 8114
+
+spring:
+  application:
+    name: sender-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  exchange: pagamento.exchange
+  routing-key: pagamento.routing-key

@@ -1,0 +1,16 @@
+server:
+  port: 8112
+
+spring:
+  application:
+    name: sender-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+rabbitmq:
+  exchange: pedido.exchange
+  routing-key: pedido.routing-key
+  queue: pedido.queue

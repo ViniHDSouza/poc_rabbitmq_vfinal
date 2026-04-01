@@ -1,0 +1,33 @@
+server:
+  port: 8113
+
+spring:
+  application:
+    name: consumer-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+    listener:
+      simple:
+        acknowledge-mode: auto
+        # prefetch=1 é ESSENCIAL para demonstrar a prioridade.
+        # Com prefetch alto, o broker envia várias mensagens de uma vez
+        # para o consumer (em lote), e a prioridade só se aplica ao que
+        # ainda está na fila — não ao que já foi pré-entregue.
+        # Com prefetch=1, o broker entrega uma por vez e sempre escolhe
+        # a de maior prioridade dentre as disponíveis.
+        prefetch: 1
+
+rabbitmq:
+  exchange: pedido.exchange
+  routing-key: pedido.routing-key
+  queue: pedido.queue
+
+consumer:
+  # Tempo de processamento simulado por pedido (ms).
+  # Valor alto = consumer lento = mensagens acumulam na fila = prioridade visível.
+  # Com processing-time=0, o consumer é tão rápido que a fila nunca acumula
+  # e a prioridade não tem efeito prático (só há 1 mensagem por vez).
+  processing-time-ms: 1000
