@@ -1,0 +1,27 @@
+server:
+  port: 8103
+
+spring:
+  application:
+    name: sender-service
+
+# -----------------------------------------------------------------------
+# RabbitMQ HTTP API
+#
+# O plugin rabbitmq_management expõe uma API REST completa na porta 15672
+# — a mesma porta do painel de gestão. Não requer Spring AMQP nem
+# dependência do cliente AMQP. Toda a comunicação é HTTP puro.
+#
+# Autenticação: HTTP Basic (usuário:senha do broker)
+# Formato:      JSON (request e response)
+# Vhost padrão: /  (codificado como %2F na URL)
+# -----------------------------------------------------------------------
+rabbitmq:
+  http-api:
+    base-url: http://localhost:15672
+    username: rabbitmq
+    password: rabbitmq
+    vhost: "/"                    # "/" codificado para URL
+    exchange: pessoa.exchange
+    routing-key: pessoa.routing-key
+    queue: pessoa.queue

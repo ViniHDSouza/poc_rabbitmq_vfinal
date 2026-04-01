@@ -1,0 +1,24 @@
+services:
+  estudo-rabbitmq:
+    image: rabbitmq:3-management
+    restart: no
+    ports:
+      - "5672:5672"     # AMQP — protocolo binário nativo
+      - "15672:15672"   # Management UI — http://localhost:15672
+      - "61613:61613"   # STOMP — porta padrão do protocolo
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    volumes:
+      # enabled_plugins ativa rabbitmq_stomp antes de o broker iniciar
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+      # rabbitmq.conf → carrega definitions.json no startup
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      # definitions.json → pré-cria exchanges, queues e bindings
+      # Necessário porque o STOMP plugin NÃO cria exchanges automaticamente
+      # (diferente de /queue, que cria a fila sob demanda)
+      - ./definitions.json:/etc/rabbitmq/definitions.json
+      - estudo-rabbitmq:/var/lib/rabbitmq/
+
+volumes:
+  estudo-rabbitmq:

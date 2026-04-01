@@ -1,0 +1,21 @@
+server:
+  port: 8104
+
+spring:
+  application:
+    name: consumer-service
+
+rabbitmq:
+  http-api:
+    base-url: http://localhost:15672
+    username: rabbitmq
+    password: rabbitmq
+    vhost: "/"
+    queue: pessoa.queue
+    exchange: pessoa.exchange
+    routing-key: pessoa.routing-key
+
+consumer:
+  # Número de mensagens a buscar por chamada ao endpoint /get
+  # Equivalente ao "count" do POST /api/queues/{vhost}/{queue}/get
+  default-count: 1

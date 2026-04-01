@@ -1,0 +1,26 @@
+server:
+  port: 8105
+
+spring:
+  application:
+    name: sender-service
+
+stomp:
+  host: localhost
+  port: 61613          # Porta padrão STOMP (vs 5672 AMQP, 1883 MQTT, 15672 HTTP API)
+  username: rabbitmq
+  password: rabbitmq
+
+  # vhost: virtual host do RabbitMQ (header "host" no frame CONNECT)
+  # NAO é o hostname — é o vhost AMQP. Padrão: /
+  vhost: "/"
+
+  # Destinos STOMP — o prefixo define o tipo de roteamento no broker
+  #
+  # /queue/X          → direto à fila X via default exchange
+  # /exchange/X/KEY   → exchange X com routing key KEY
+  # /topic/X          → exchange amq.topic com routing key X (wildcards . e #)
+  destinations:
+    fila:     "/queue/pessoa.queue"
+    exchange: "/exchange/pessoa.exchange/pessoa.routing-key"
+    topico:   "/topic/pessoa.stomp"

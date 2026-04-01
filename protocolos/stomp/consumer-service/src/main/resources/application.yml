@@ -1,0 +1,22 @@
+server:
+  port: 8106
+
+spring:
+  application:
+    name: consumer-service
+
+stomp:
+  host: localhost
+  port: 61613
+  username: rabbitmq
+  password: rabbitmq
+
+  vhost: "/"
+
+  # Destinos assinados pelo consumer
+  # Assinatura a /queue/X cria a fila X se não existir
+  subscriptions:
+    - destination: "/queue/pessoa.queue"
+      ack-mode: "client-individual"   # ACK manual por mensagem
+    - destination: "/topic/pessoa.stomp"
+      ack-mode: "auto"                # ACK automático

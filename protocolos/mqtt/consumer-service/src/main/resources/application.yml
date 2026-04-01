@@ -1,0 +1,39 @@
+server:
+  port: 8102
+
+spring:
+  application:
+    name: consumer-service
+
+mqtt:
+  broker-url: tcp://localhost:1883
+  username: rabbitmq
+  password: rabbitmq
+  client-id: consumer-service-01
+  keep-alive-seconds: 60
+  connection-timeout-seconds: 10
+
+  # Tópicos assinados (com wildcards MQTT)
+  # + (single-level wildcard) → substitui exatamente UM nível
+  # # (multi-level wildcard)  → substitui UM OU MAIS níveis (só no final)
+  #
+  # Exemplos:
+  #   pessoas/+        → pessoas/cadastro, pessoas/atualizacao, pessoas/exclusao
+  #                      NÃO casa: pessoas/a/b (dois níveis extras)
+  #   pessoas/#        → pessoas/cadastro, pessoas/a/b, pessoas/a/b/c
+  #                      Casa tudo abaixo de pessoas/
+  #   +/cadastro       → pessoas/cadastro, sensores/cadastro
+  subscriptions:
+    - topic: "pessoas/#"
+      qos: 1
+
+  # QoS padrão de assinatura (pode ser sobrescrito por subscription)
+  # 0 = At Most Once   — sem confirmação, possível perda
+  # 1 = At Least Once  — confirmação garantida, possível duplicata
+  # 2 = Exactly Once   — entrega garantida e sem duplicatas (mais lento)
+  default-qos: 1
+
+  # Clean session:
+  # true  → broker descarta sessão e assinaturas ao desconectar
+  # false → broker preserva assinaturas e mensagens QoS>0 pendentes
+  clean-session: true

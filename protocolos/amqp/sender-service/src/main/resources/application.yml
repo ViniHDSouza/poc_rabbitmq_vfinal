@@ -1,0 +1,36 @@
+server:
+  port: 8099
+
+spring:
+  application:
+    name: sender-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+    # ---------------------------------------------------------------
+    # Publisher Confirms — confirmação AMQP de que o broker recebeu
+    # a mensagem e a persistiu (se deliveryMode=2).
+    #
+    # CORRELATED: cada confirm é correlacionado ao CorrelationData
+    #             informado no envio. Permite saber qual mensagem
+    #             específica foi confirmada ou rejeitada.
+    # SIMPLE:     confirm global sem correlação por mensagem.
+    # NONE:       sem confirms (padrão — fire-and-forget).
+    # ---------------------------------------------------------------
+    publisher-confirm-type: correlated
+
+    # ---------------------------------------------------------------
+    # Publisher Returns — se o broker não conseguir rotear a mensagem
+    # para nenhuma fila (sem binding), devolve ao publisher em vez
+    # de descartar silenciosamente.
+    # ---------------------------------------------------------------
+    publisher-returns: true
+
+rabbitmq:
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key
+  queue: pessoa.queue

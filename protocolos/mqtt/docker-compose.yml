@@ -1,0 +1,20 @@
+services:
+  estudo-rabbitmq:
+    image: rabbitmq:3-management
+    restart: no
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI — http://localhost:15672
+      - "1883:1883"     # MQTT — porta padrão do protocolo
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    volumes:
+      # Monta o arquivo enabled_plugins antes do broker iniciar.
+      # Esta é a forma mais confiável de habilitar plugins — evita
+      # o problema de 'command' sobrescrever o entrypoint do container.
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - estudo-rabbitmq:/var/lib/rabbitmq/
+
+volumes:
+  estudo-rabbitmq:

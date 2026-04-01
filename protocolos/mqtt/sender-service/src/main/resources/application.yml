@@ -1,0 +1,30 @@
+server:
+  port: 8101
+
+spring:
+  application:
+    name: sender-service
+
+mqtt:
+  broker-url: tcp://localhost:1883   # Porta MQTT padrão (vs 5672 do AMQP)
+  username: rabbitmq
+  password: rabbitmq
+
+  # Client ID — identificador único deste cliente no broker.
+  # Dois clientes com o mesmo ID não podem estar conectados simultaneamente.
+  # O broker encerra a sessão mais antiga quando uma nova conexão com o mesmo ID chega.
+  client-id: sender-service-01
+
+  # Keep-alive — intervalo em segundos em que o cliente envia PINGREQ ao broker
+  # para manter a conexão ativa mesmo sem publicar mensagens.
+  # O broker encerra a conexão se não receber comunicação dentro de 1,5 × keep-alive.
+  keep-alive-seconds: 60
+
+  # Connection timeout em segundos
+  connection-timeout-seconds: 10
+
+  # Tópicos de publicação (hierarquia separada por /)
+  topics:
+    cadastro:   "pessoas/cadastro"        # Publicação de pessoa
+    atualizacao: "pessoas/atualizacao"    # Atualização de pessoa
+    exclusao:   "pessoas/exclusao"        # Exclusão de pessoa

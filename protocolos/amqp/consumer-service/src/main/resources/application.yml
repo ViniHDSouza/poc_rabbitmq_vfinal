@@ -1,0 +1,24 @@
+server:
+  port: 8100
+
+spring:
+  application:
+    name: consumer-service
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+    listener:
+      simple:
+        # MANUAL: o código controla ACK/NACK explicitamente,
+        # tornando visível o momento exato da confirmação AMQP.
+        acknowledge-mode: manual
+        prefetch: 1
+
+rabbitmq:
+  exchange: pessoa.exchange
+  routing-key: pessoa.routing-key
+  queue: pessoa.queue
